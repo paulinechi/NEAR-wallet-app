@@ -1,0 +1,20 @@
+{
+    "user1" : {
+       "name" : "bob",
+       "subject" : "comp307",
+       "comment" : "good",
+       "id": 1
+    },
+    "user2" : {
+       "name" : "mary",
+       "password" : "comp307",
+       "profession" : "not bad",
+       "id": 2
+    },
+    "user3" : {
+       "name" : "jack",
+       "password" : "comp361",
+       "profession" : "great",
+       "id": 3
+    }
+ }

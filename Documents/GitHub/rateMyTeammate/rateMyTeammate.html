@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>rateMyTeammate</title>
+    <meta charset="utf-8">
+
+    <style>
+        .header {
+            padding: 130px;
+            text-align: center;
+            font-family: Helvetica;
+            overflow: hidden;
+            position: relative;
+            background-image: url("https://fthmb.tqn.com/l7hf7-haO7ziEzX2rhhV2VHVegk=/2121x1416/filters:fill(auto,1)/StudyGroup-57c724aa3df78c71b600e991.jpg");
+            font-size: 1.3em;
+            background-size: cover;
+        }
+
+        .aboveHeader {
+            background-color: black;
+            text-align: center;
+            overflow: hidden;
+            font-family: arial, sans-serif;
+            padding-bottom: 3px;
+            padding-top: 3px;
+        }
+
+        .aboHeaderR {
+            float: right;
+            overflow: hidden;
+            padding-right: 80px;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #c94c4c;
+            font-family: arial, sans-serif;
+            text-align: center;
+            padding-bottom: 3px;
+            padding-top: 3px;
+            font-size: 0.8em;
+        }
+
+        .floated_img {
+            display: inline-block;
+            padding: 25px;
+        }
+
+        .object-fit_cover {
+            object-fit: cover
+        }
+
+        .imageSec {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div class="aboveHeader" id="aboTcolors">
+        <div class="aboHeaderR" style="color:white">
+            Welcome, students
+            <a href="#" style="color:#c94c4c"> Email us </a>
+        </div>
+    </div>
+
+    <div class="header" class="container" id="headercolor">
+        <div class="headerL">
+            <h1 style="color:antiquewhite">Rate My Teammate</h1>
+        </div>
+        <div class="headerR">
+            <h3 style="color:white"> Choose Your Teammate Wisely </h3>
+        </div>
+
+        <div id="location">
+
+            <!-- select from drag down list, easy -->
+
+            <form action="/api/fetchdata" style="color:#eea29a">
+                By subject:
+                <select name="neighbourhood">
+                    <option value="comp307">comp307</option>
+                    <option value="comp307">comp307</option>
+                    <option value="comp307">comp307</option>
+                    <option value="comp307">comp307</option>
+                    <option value="comp307">comp307</option>
+                </select>
+                <input type="submit" value="Let's find out!" >
+            </form>
+            
+            <!--action="/api/fetchdata" -->
+            <form action="http://localhost:8000/api/fetchdata/" style="color:#eea29a">
+                <label for="fname">Or by name: </label>
+                <input type="text" id="fname" name="firstname" placeholder="His/her name.. ">   
+                <input id="clickclick" type="submit" value="Let's find out!">
+            </form>
+            
+        </div>
+    </div>
+
+    <div class="topnav" id="navbar">
+        <a href="#" style="color:white"> HOME</a>
+        <a href="#" style="color:white">CLASS</a>
+        <a href="#" style="color:white">ABOUT US</a>
+    </div>
+
+    <div class="imageSec">
+        <div class="floated_img">
+            <img class="object-fit_cover" src="https://image.freepik.com/free-photo/smart-student-holding-a-file_1098-3425.jpg" onmouseover="this.src='https://cdn.makeuseof.com/wp-content/uploads/2016/07/cleaner-better-code-670x335.jpg'"
+                onmouseout="this.src='https://image.freepik.com/free-photo/smart-student-holding-a-file_1098-3425.jpg'" alt="Some image"
+                height="200" width="200">
+            <a href="#">
+                <p>TOP RATED *IN GREAT DEMAND*</p>
+            </a>
+        </div>
+
+        <div class="floated_img">
+            <img class="object-fit_cover" src="http://www.metronews.ca/content/dam/thestar/2017/09/05/finance-school-not-having-fun-scorgie/story-308843-352640-image-rendered.jpg.size.xxlarge.letterbox.jpg"
+                onmouseover="this.src='https://cdn.makeuseof.com/wp-content/uploads/2016/07/cleaner-better-code-670x335.jpg'"
+                onmouseout="this.src='http://www.metronews.ca/content/dam/thestar/2017/09/05/finance-school-not-having-fun-scorgie/story-308843-352640-image-rendered.jpg.size.xxlarge.letterbox.jpg'"
+                alt="Another image" height="200" width="200">
+            <a href="#">
+                <p>MOST FUN TO WORK WITH ;)</p>
+            </a>
+        </div>
+
+        <div class="floated_img">
+            <img class="object-fit_cover" src="http://media.salon.com/2013/08/student_asleep-620x412.jpg?w=240" onmouseover="this.src='https://cdn.makeuseof.com/wp-content/uploads/2016/07/cleaner-better-code-670x335.jpg'"
+                onmouseout="this.src='http://media.salon.com/2013/08/student_asleep-620x412.jpg?w=240'" alt="Some image" height="200"
+                width="200">
+            <a href="#">
+                <p>WORST RATED (AVOID!)</p>
+            </a>
+        </div>
+
+        <div class="DisplayComments"> insert comment here </div>
+
+</body>
+
+
+<script language="javascript" type="text/javascript">
+   function findUserByName(name){
+    alert("bob");
+    
+
+
+   }
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</html>

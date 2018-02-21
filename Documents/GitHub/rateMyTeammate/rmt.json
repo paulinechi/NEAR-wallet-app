@@ -1,0 +1,60 @@
+[
+    {
+        "type": "header",
+        "version": "4.7.4",
+        "comment": "Export to JSON plugin for PHPMyAdmin"
+    },
+    {
+        "type": "database",
+        "name": "rateMyTeammate"
+    },
+    {
+        "type": "table",
+        "name": "rmt",
+        "database": "rateMyTeammate",
+        "data": [
+            {
+                "id": "1",
+                "userName": "bob",
+                "subject": "comp307",
+                "comment": "smart"
+            },
+            {
+                "id": "1",
+                "userName": "bob",
+                "subject": "comp307",
+                "comment": "smart"
+            },
+            {
+                "id": "0",
+                "userName": "mary",
+                "subject": "comp307",
+                "comment": "not bad"
+            },
+            {
+                "id": "0",
+                "userName": "mary",
+                "subject": "comp307",
+                "comment": "not bad"
+            },
+            {
+                "id": "0",
+                "userName": "mary",
+                "subject": "comp307",
+                "comment": "not bad"
+            },
+            {
+                "id": "2",
+                "userName": "jack",
+                "subject": "comp361",
+                "comment": "great"
+            },
+            {
+                "id": "2",
+                "userName": "jack",
+                "subject": "comp361",
+                "comment": "great"
+            }
+        ]
+    }
+]
