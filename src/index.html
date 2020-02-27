@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+	<h1>
+    <!-- <a id="who" target="_blank">Who</a>, -->
+    <a id="account-id" href="https://wallet.nearprotocol.com/profile" target="_blank"></a>, 
+     Welcome to your NEAR app</h1>
+	<button id="sign-in" class="signed-out" style="display: none">
+    Sign in with NEAR
+  </button>
+  <!-- <button id="say-hi" class="signed-in" style="display: none">
+    Say hi!
+  </button> -->
+
+<div>
+	<p> Easy Transfer </p>
+	<input type="text" placeholder="account" id='transaction-account' />
+  <input type="number" placeholder="number of token" id='transaction-amount' />
+  <input type="text" placeholder="note" id='transaction-note' />
+
+  <button id="new-transaction"> submit </button>
+</div>
+
+<p> Transaction history </p>
+<!-- <h3>Messages: <button id="refresh-button" class="btn btn-sm btn-default"><span id="refresh-span" class="glyphicon glyphicon-refresh"></span></button></h3> -->
+<div id="messages">
+</div>
+
+
+
+    <div id="guest-book-container" class="hidden">
+      <!-- <div id="hello">
+        <h2 id="hello">Hi, <span class='account-id'></span>!</h2>
+      </div> -->
+      <!-- <div class="row">
+        <div class="col-sm-10">
+          <input id="text-message" type="text" class="form-control" placeholder="Enter your message here" />
+        </div>
+        <div class="col-sm-2">
+          <button id="submit-tx-button" class="btn  btn-block" >Post</button>
+        </div>
+      </div> -->
+    </div>
+
+
+
+  <footer>
+    <p class="signed-in" style="display: none">
+      Signed in as <a id="account-id" href="https://wallet.nearprotocol.com/profile" target="_blank"></a>
+      • <a href="#signout" id="sign-out">sign out</a>
+    </p>
+  </footer>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/nearlib@0.20.0/dist/nearlib.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+  <script src="./config.js"></script>
+  <script src="./main.js"></script>
+</body>
+</html>
