@@ -1,5 +1,5 @@
 (function() {
-  const CONTRACT_NAME = 'pchi2'; /* TODO: fill this in! */
+  const CONTRACT_NAME = 'jfaulkner'; /* TODO: fill this in! */
   const DEFAULT_ENV = 'development';
 
   function getConfig(env) {

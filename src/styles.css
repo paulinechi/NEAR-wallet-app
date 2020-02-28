@@ -68,7 +68,11 @@ footer {
   justify-content: space-between;
 }
 
+table > tr {
+  text-align: left;
+}
+
 .message-text {
-  display: inline-block !important;
-  margin-right: 20px !important;
+  /*display: inline-block !important;*/
+  padding-right: 20px !important;
 }
