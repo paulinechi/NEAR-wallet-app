@@ -31,7 +31,7 @@ export function addMessage(text: string, amount: string, receiver: string): void
     sender: context.sender,
     receiver: receiver,
     amount: amount,
-    text: text // note, add special type later 
+    text: text // note, add special type later
   };
 
 
@@ -63,8 +63,8 @@ export function getMessages(): PostedMessage[] {
 
   // let messages = storage.get('message');
   // let messagesOnBC = storage.getSome<PersistentVector<PostedMessage>>('message');
-   
-  
+
+
   // let messagesOnBC = balances.get('message_test');
 
   // return messagesOnBC;
@@ -103,8 +103,8 @@ export function getMessages(): PostedMessage[] {
 // storing the account_id of the sender under the key "last_sender" on the blockchain
 export function sayHi(): void {
   logging.log('hiiii');
-  logging.log( runtime_api.block_index().toString() ); 
-  logging.log( runtime_api.storage_iter_range(10,81300,10,81400).toString() ); 
+  logging.log( runtime_api.block_index().toString() );
+  logging.log( runtime_api.storage_iter_range(10,81300,10,81400).toString() );
 
 
 
@@ -127,7 +127,7 @@ export function sayHi(): void {
 export function whoSaidHi(): string | null {
   // getString returns a string value for a given string key.
   logging.log('hiiii');
-  logging.log( runtime_api.block_index().toString() ); 
+  logging.log( runtime_api.block_index().toString() );
 
   return storage.getString(LAST_SENDER_KEY);
 }

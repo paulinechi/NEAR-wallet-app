@@ -10,7 +10,7 @@
 <body>
 	<h1>
     <!-- <a id="who" target="_blank">Who</a>, -->
-    <a id="account-id" href="https://wallet.nearprotocol.com/profile" target="_blank"></a>, 
+    <a class="account-id" href="https://wallet.nearprotocol.com/profile" target="_blank"></a>,
      Welcome to your NEAR app</h1>
 	<button id="sign-in" class="signed-out" style="display: none">
     Sign in with NEAR
@@ -30,8 +30,8 @@
 
 <p> Transaction history </p>
 <!-- <h3>Messages: <button id="refresh-button" class="btn btn-sm btn-default"><span id="refresh-span" class="glyphicon glyphicon-refresh"></span></button></h3> -->
-<div id="messages">
-</div>
+<table class="table" id="messages">
+</table>
 
 
 
@@ -53,7 +53,7 @@
 
   <footer>
     <p class="signed-in" style="display: none">
-      Signed in as <a id="account-id" href="https://wallet.nearprotocol.com/profile" target="_blank"></a>
+      Signed in as <a class="account-id" href="https://wallet.nearprotocol.com/profile" target="_blank"></a>
       • <a href="#signout" id="sign-out">sign out</a>
     </p>
   </footer>
@@ -61,7 +61,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
- 
+
   <script src="https://cdn.jsdelivr.net/npm/nearlib@0.20.0/dist/nearlib.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>

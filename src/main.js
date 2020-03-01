@@ -48,22 +48,20 @@ function renderMessages(messages) {
   let objs = [];
   for (let i = 0; i < messages.length; ++i) {
     objs.push(
-      $('<div/>').addClass('row').append([   
-        $('<div/>').addClass('message-text').text(messages[i].sender),
-        $('<p>').addClass('message-text').text(messages[i].receiver),
-        $('<p>').addClass('message-text').text(messages[i].amount),
-        $('<p>').addClass('message-text').text(messages[i].text),
-        $('<div/>'),
+      $('<tr/>').addClass('row').append([
+        $('<td/>').addClass('message-text col-md-3').text(messages[i].sender),
+        $('<td/>').addClass('message-text col-md-3').text(messages[i].receiver),
+        $('<td/>').addClass('message-text col-md-2').text(messages[i].amount),
+        $('<td/>').addClass('message-text col-md-4').text(messages[i].text),
       ])
     );
-  } 
+  }
      objs.push(
-        $('<div/>').addClass('row').append([    
-        $('<div/>').addClass('message-text').append($('<strong/>').text('Sender')),
-        $('<p>').addClass('message-text').append($('<strong/>').text('Receiver')),
-        $('<p>').addClass('message-text').append($('<strong/>').text('Amount')),
-        $('<p>').addClass('message-text').append($('<strong/>').text('Note')),
-        $('<div/>'),
+        $('<tr/>').addClass('row').append([
+          $('<th/>').addClass('message-text col-md-3').text('Sender'),
+          $('<th/>').addClass('message-text col-md-3').text('Receiver'),
+          $('<th/>').addClass('message-text col-md-2').text('Amount'),
+          $('<th/>').addClass('message-text col-md-4').text('Note'),
       ])
     );
   $('#messages').empty().append(objs.reverse());
@@ -72,7 +70,7 @@ function renderMessages(messages) {
 
 
 
-// should call this method when doing a transaction 
+// should call this method when doing a transaction
 function submitMessage() {
   let receiver = $('#transaction-account').val();
   let amount = $('#transaction-amount').val();
@@ -164,7 +162,7 @@ async function signedInFlow() {
 
 
   // Post button to send messages
-  $('#submit-tx-button').click(submitMessage); // to be deleted 
+  $('#submit-tx-button').click(submitMessage); // to be deleted
   $('#new-transaction').click(submitMessage);
 
 
@@ -172,7 +170,10 @@ async function signedInFlow() {
   Array.from(document.querySelectorAll('.signed-in')).forEach(el => el.style.display = '');
 
   // Displaying current account name.
-  document.getElementById('account-id').innerText = window.accountId;
+  var account_ids = document.getElementsByClassName('account-id');
+  for (var i = 0; i < account_ids.length; i++) {
+    account_ids[i].innerText = window.accountId;
+  }
 
 
   document.getElementById('new-transaction').addEventListener('click', async () => {
@@ -180,7 +181,7 @@ async function signedInFlow() {
   console.log('click to submit transaction');
     let receiver = document.getElementById('transaction-account').value;
     let tokenAmount = document.getElementById('transaction-amount').value;
-    
+
     console.log(receiver);
     console.log(tokenAmount);
 
@@ -189,9 +190,9 @@ async function signedInFlow() {
     // nearlib.sendToken(2,'pchi', 'pchi2');
     console.log(window.accountId);
     let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
-  
+
     // find a way to store this automatically for each new user
-    let user_account_privateKey = "ed25519:36wau29Hn5jp5ZJff4XRt81etEL2DoAoS9XyVKLUnnCwLFQ7g1Ta6SEMm9qiv7SGPRMHcGU8FTGgxiEnPoKko1Ju"
+    let user_account_privateKey = "ed25519:3KTaFwmCnDyeHJTkmpmh3YXu3zESgH31it4nNNVZxUdzptYxsNrAzrkbyrnRr7MWW3Ep25a4o91EZX4DRQeg2vVv"// Find some way to store as env variable for now
     let the_user_account = window.accountId;
     window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
 
@@ -216,7 +217,7 @@ async function signedInFlow() {
           }, 1000);
         })
         .catch(console.error);
-          
+
       // celebrate
       console.log("success!")
       alert('success!');

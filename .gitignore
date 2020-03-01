@@ -1,0 +1,11 @@
+# Dependencies and packages
+node_modules/
+
+# Output files
+out/
+
+# Account details
+neardev/
+
+# Passwords etc.
+.env
