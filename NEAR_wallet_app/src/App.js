@@ -218,7 +218,7 @@ class App extends Component {
                     {/* <TableRow key={row.datetime} */}
                     {/* change the unique key to the transaction id/date later  */}
                     <TableCell component="th" scope="row">
-                      {row.date}
+                      {row.datetime}
                     </TableCell>
                     <TableCell align="right">{row.sender}</TableCell>
                     <TableCell align="right">{row.text}</TableCell>
