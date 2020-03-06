@@ -11,6 +11,8 @@ export class PostedMessage {
   receiver: string;
   amount: string;
   text: string;
+  datetime: string;
+  // account_balance: string;
 }
 
 export class PostedMessageTest {

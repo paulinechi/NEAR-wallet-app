@@ -19,6 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import $ from 'jquery';
+import BN from 'bn.js'
 
 const useStyles = makeStyles({
   table: {
@@ -31,6 +32,7 @@ function createData(date, description, receiver, amount, balance) {
 }
 
 let rows = [];
+let accountBalance = 'ab test';
 
 
 class App extends Component {
@@ -63,20 +65,24 @@ class App extends Component {
     rows = transactionSaved;
     console.log(rows);
 
-    // console.log(this.messages);
     this.setState({
       login: true,
     })
     const accountId = await this.props.wallet.getAccountId()
+
+    let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
+    let sender = await near.account(accountId);
+
+    accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount)*100)/100;
+    console.log(accountBalance); 
+    // let accountDetails = await sender.getAccountDetails(); // get authorizedApps: [], transactions: [] can add later 
+
     if (window.location.search.includes("account_id")) {
       window.location.replace(window.location.origin + window.location.pathname)
     }
     this.props.contract.welcome({ account_id: accountId }).then(response => this.setState({ speech: response.text }))
 
     // -------------------------------------------------------------------
-    $('#new-transaction').click(this.submitMessage);
-
-
     // Displaying the signed in flow container.
     Array.from(document.querySelectorAll('.signed-in')).forEach(el => el.style.display = '');
 
@@ -87,43 +93,37 @@ class App extends Component {
       let receiver = document.getElementById('transaction-account').value;
       let tokenAmount = document.getElementById('transaction-amount').value;
       let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
+      console.log(amount_to_send);
 
       // find a way to store this automatically for each new user ******
       // also located in the /neardev/default/{accountId}.json folder
-      let user_account_privateKey = "ed25519:Ng6Y3w2oyPP8SQhrnQqWrRntL8qwSkn4JZwTmdVTt7N8LnwY2bbx3FCCwV26hnNfXv9D1TgFUmTd5a9pQkUbbWb"
+      let user_account_privateKey = "ed25519:4biVvSw2X9XEQFkQMswhqh96peznLFTTdZhFRS6ZrPNiGKoFBXzCU9j32myGvxLBH8gosetyHfSBAG34ZwuMan84"
       let the_user_account = window.accountId;
 
       window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
-      let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
 
       try {
-        let sender = await near.account(accountId);
-        console.log(sender);
-
         let final = await sender.sendMoney(receiver, amount_to_send);
         console.log(final);
+
+        // console.log('accountBalance');
+        // accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount)*100)/100;
+        // console.log(accountBalance);
 
         // print out the results
         console.log("transaction id", final.transaction_outcome.id)
         console.log("gas used", final.transaction_outcome.outcome.gas_burnt)
-        let note = 'transaction note';
-
-        contract.addMessage({ note })
-          .then(() => {
-            setTimeout(() => {
-            }, 1000);
-          })
-          .catch(console.error);
-
         console.log("success!")
         alert('success!');
+
+        this.submitMessage();
       } catch (error) {
         console.warn(error.type, error.message)
       }
     })
     transactionSaved = await contract.getMessages();
     // update the table afte transaction completed 
-    this.rows = transactionSaved;
+    rows = transactionSaved;
   }
 
   async requestSignIn() {
@@ -140,17 +140,17 @@ class App extends Component {
     let receiver = $('#transaction-account').val();
     let amount = $('#transaction-amount').val();
     let text = $('#transaction-note').val();
+    let datetime = Date(); // if have time, make it display only date time 
+
+    // let account_balance = accountBalance;
 
     $('#text-message').val('');
-    contract.addMessage({ text, amount, receiver })
+    contract.addMessage({ text, amount, receiver, datetime })
       .then(() => {
         setTimeout(() => {
         }, 1000);
       })
       .catch(console.error);
-
-    let messagesSaved = contract.getMessages();
-    console.log(messagesSaved);
   }
 
   requestSignOut() {
@@ -184,6 +184,7 @@ class App extends Component {
           {/* <p><span role="img" aria-label="chain">⛓</span> This little react app is connected to blockchain right now. <span role="img" aria-label="chain">⛓</span></p> */}
           <p style={style}>{this.state.speech}</p>
         </div>
+        <p> CurrentAccount Balance: {accountBalance}</p>
         <div>
           {this.state.login ? <button onClick={this.requestSignOut}>Log out</button>
             : <button onClick={this.requestSignIn}>Log in with NEAR</button>}
@@ -214,6 +215,7 @@ class App extends Component {
               <TableBody>
                 {rows.map(row => (
                   <TableRow key={Math.random()}>
+                    {/* <TableRow key={row.datetime} */}
                     {/* change the unique key to the transaction id/date later  */}
                     <TableCell component="th" scope="row">
                       {row.date}
