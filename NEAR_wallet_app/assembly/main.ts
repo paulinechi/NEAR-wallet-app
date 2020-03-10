@@ -4,7 +4,7 @@ import { context, logging, storage, runtime_api, PersistentVector, PersistentMap
 import { TextMessage } from "./model";
 import { PostedMessage, PostedMessageTest, MessageArray } from "./model";
 
-const DEFAULT_MESSAGE = "Hello" // not used
+const DEFAULT_MESSAGE = "WELCOME"
 const LAST_SENDER_KEY = "last_sender"; // not used
 const MESSAGE_LIMIT = 10; // change this after we have proper pagination 
 const messages = new PersistentVector<PostedMessage>("m");
@@ -32,17 +32,15 @@ function printString(s: string): string {
 
 
 // ------------------------- old function from Near wallet ----------------
-export function addMessage(text: string, amount: string, receiver: string, datetime: string 
-  // account_balance: string
-  ): void {
+export function addMessage(text: string, amount: string, receiver: string, datetime: string, balance: string): void {
   // Creating a new message and populating fields with our data
   const message: PostedMessage = {
     sender: context.sender,
     receiver: receiver,
     amount: amount,
     text: text,
-    datetime: datetime
-    // account_balance: account_balance
+    datetime: datetime,
+    balance: balance
   };
 
   // Adding the message to end of the the persistent collection

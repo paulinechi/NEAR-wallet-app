@@ -12,7 +12,7 @@ export class PostedMessage {
   amount: string;
   text: string;
   datetime: string;
-  // account_balance: string;
+  balance: string;
 }
 
 export class PostedMessageTest {

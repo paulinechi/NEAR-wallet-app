@@ -3,12 +3,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: 1rem;
   color: white;
-  text-align: center;
-  padding:2%; 
+  font-family: Andale Mono, monospace;
 }
 
 .App-link {
@@ -39,14 +36,20 @@
 }
 
 .image-wrapper {
-  display: flex;
+  /* display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; */
+  padding: 50px;
+  border-bottom: #bbbbbb 5px solid;
+  text-align: center;
+
 }
 
 .logo {
-  width: 33%;
+  width: 5rem;
+  float: left;
+  margin-left: 20px;
 }
 
 p {
@@ -55,14 +58,140 @@ p {
 }
 
 button {
-  padding: 5px;
+  padding: 2.5px 8px;
   color: #0072CE;
-  border-radius: 10px;
+  border-radius: 0.25rem;
   border: 3px solid #0072CE;
 }
 
 button:hover {
   cursor: pointer;
   color: white;
-  background: #0072CE;
+  background: #f6cd61;
 } 
+
+.btn-primary:not(:disabled):not(.disabled).active, 
+.btn-primary:not(:disabled):not(.disabled):active, 
+.show>.btn-primary.dropdown-toggle {
+  cursor: pointer;
+  color: white;
+  background: #f6cd61;
+  border-style: none;
+} 
+
+
+.send_token_modal{
+  margin: 10px;
+}
+
+input {
+  margin-left: 10px;
+}
+
+.transfer-token-btn {
+  color: #25282A;
+  border-style: none;
+}
+
+.transfer-token-btn:hover {
+  color: #25282A;
+  border-style: none;
+  background-color: white;
+}
+
+.btn-primary {
+  background-color: white;
+  color: grey ;
+  border-style: none;
+ } 
+
+ .btn-primary:hover {
+  background-color: #f6cd61;
+  border-style: none;
+ }
+
+
+ #dropdown-settings-button{
+  float: right;
+  padding: 1.5px 6px;
+  margin-right: 20px;
+}
+
+ #dropdown-basic-button{
+   float: right;
+   padding: 1.5px 6px;
+   margin-right: 20px;
+ }
+
+ .login-btn {
+   float: right;
+   border-style: none;
+   background-color: #4a4e4d;
+   color: white;
+   margin-right: 20px;
+ }
+
+ .header {
+   background-color: #25282A;
+   padding: 20px;
+ }
+
+
+ .header-row {
+   background-color: #29a8ab;
+   padding: 8px;
+ }
+
+
+ P {
+    font-family: Andale Mono, monospace;
+  }
+
+
+.table-header {
+  background-color: #eeeeee;
+  font-weight: bold;
+}
+
+.MuiTableCell-body {
+  color: #5e5656 !important ;
+  font-family: Andale Mono, monospace !important ;
+  max-width: 135px;
+}
+
+.MuiTableCell-head {
+  font-family: Andale Mono, monospace !important;
+}
+
+
+.modal-header {
+  background-color: #eeeeee;
+}
+
+.modal-content {
+  font-family: Andale Mono, monospace;
+}
+
+#new-transaction {
+  border-style: none;
+  color: #25282A;
+}
+
+
+.modal-footer{
+  background-color: #eeeeee;
+}
+
+.btn-secondary {
+  border-style: none;
+  padding: 2.5px 6px;
+}
+
+
+#account-balance-statement {
+  font-weight: bold;
+}
+
+.action-btn {
+  margin-right: 20px;
+}

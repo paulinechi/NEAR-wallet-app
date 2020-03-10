@@ -1,5 +1,7 @@
 import 'regenerator-runtime/runtime';
-import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import React, { Component, useState } from 'react';
 import logo from './assets/logo.svg';
 import nearlogo from './assets/gray_near_logo.svg';
 import near from './assets/near.svg';
@@ -18,6 +20,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
+import { Button, Modal, DropdownButton, Dropdown } from 'react-bootstrap';
+
 import $ from 'jquery';
 import BN from 'bn.js'
 
@@ -31,8 +35,179 @@ function createData(date, description, receiver, amount, balance) {
   return { date, description, receiver, amount, balance };
 }
 
+
+function TransferTokenModal() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Button onClick={handleShow} className='transfer-token-btn'>
+        Transfer Token
+      </Button>
+
+      <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Send Token</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='send_token_modal'>
+            Account to send to: <input type="text" placeholder=" Account" id='transaction-account' />
+          </div>
+
+          <div className='send_token_modal'>
+            Amount: <input type="number" placeholder=" Number of token" id='transaction-amount' />
+          </div>
+          
+          <div className='send_token_modal'>
+            Note: <input type="text" placeholder=" Note" id='transaction-note' />
+          </div>
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <button id="new-transaction" variant="primary" onClick={transferToken}>
+            Confirm
+          </button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
+
+
+
+function RequestTokenModal() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Button variant="primary" onClick={handleShow} className='transfer-token-btn'>
+        Request Token
+      </Button>
+
+      <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Send Token</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='send_token_modal'>
+            Account to send to: <input type="text" placeholder=" Account" id='transaction-account' />
+          </div>
+
+          <div className='send_token_modal'>
+            Amount: <input type="number" placeholder=" Number of token" id='transaction-amount' />
+          </div>
+          
+          <div className='send_token_modal'>
+            Note: <input type="text" placeholder=" Note" id='transaction-note' />
+          </div>
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <button id="new-transaction" variant="primary" onClick={transferToken}>
+            Confirm
+          </button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
+
+
+function ViewAnalysis() {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Button variant="primary" onClick={handleShow} className='transfer-token-btn'>
+        View Analysis
+      </Button>
+      {/* shouldn't be a modal, change the transaction table view */}
+    </>
+  );
+}
+
+
 let rows = [];
-let accountBalance = 'ab test';
+let accountBalance = '';
+
+
+async function transferToken() {
+  // document.getElementById('new-transaction').addEventListener('click', async () => {
+    console.log('click to submit transaction');
+    let receiver = document.getElementById('transaction-account').value;
+    let tokenAmount = document.getElementById('transaction-amount').value;
+    let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
+    console.log(amount_to_send);
+
+    // find a way to store this automatically for each new user ******
+    // also located in the /neardev/default/{accountId}.json folder
+    let user_account_privateKey = "ed25519:4biVvSw2X9XEQFkQMswhqh96peznLFTTdZhFRS6ZrPNiGKoFBXzCU9j32myGvxLBH8gosetyHfSBAG34ZwuMan84"
+    let the_user_account = window.accountId;
+
+    window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
+    let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
+    let sender = await near.account(accountId);
+
+    try {
+      let final = await sender.sendMoney(receiver, amount_to_send);
+      console.log(final);
+
+      // console.log('accountBalance');
+      accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount) * 100) / 100;
+      console.log(accountBalance);
+
+      // print out the results
+      console.log("transaction id", final.transaction_outcome.id)
+      console.log("gas used", final.transaction_outcome.outcome.gas_burnt)
+      console.log("success!")
+      alert('success!');
+
+      submitMessage(accountBalance);
+    } catch (error) {
+      console.warn(error.type, error.message)
+    }
+
+  // })
+  // transactionSaved = await contract.getMessages();
+  // // update the table afte transaction completed 
+  // rows = transactionSaved;
+}
+
+
+function submitMessage(accountBalance) {
+  let receiver = $('#transaction-account').val();
+  let amount = $('#transaction-amount').val();
+  let text = $('#transaction-note').val();
+  let datetime = Date(); // if have time, make it display only date time 
+
+  let balance = '' + accountBalance;
+  console.log(typeof balance);
+
+  console.log(balance);
+  $('#text-message').val('');
+  contract.addMessage({ text, amount, receiver, datetime, balance })
+    .then(() => {
+      setTimeout(() => {
+      }, 1000);
+    })
+    .catch(console.error);
+}
 
 
 class App extends Component {
@@ -46,7 +221,6 @@ class App extends Component {
     this.requestSignIn = this.requestSignIn.bind(this);
     this.requestSignOut = this.requestSignOut.bind(this);
     this.signedOutFlow = this.signedOutFlow.bind(this);
-    this.submitMessage = this.submitMessage.bind(this);
   }
 
 
@@ -73,8 +247,8 @@ class App extends Component {
     let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
     let sender = await near.account(accountId);
 
-    accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount)*100)/100;
-    console.log(accountBalance); 
+    accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount) * 100) / 100;
+    console.log(accountBalance);
     // let accountDetails = await sender.getAccountDetails(); // get authorizedApps: [], transactions: [] can add later 
 
     if (window.location.search.includes("account_id")) {
@@ -85,46 +259,8 @@ class App extends Component {
     // -------------------------------------------------------------------
     // Displaying the signed in flow container.
     Array.from(document.querySelectorAll('.signed-in')).forEach(el => el.style.display = '');
-
-    // Displaying current account name.
-    // document.getElementById('account-id').innerText = window.accountId;
-    document.getElementById('new-transaction').addEventListener('click', async () => {
-      console.log('click to submit transaction');
-      let receiver = document.getElementById('transaction-account').value;
-      let tokenAmount = document.getElementById('transaction-amount').value;
-      let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
-      console.log(amount_to_send);
-
-      // find a way to store this automatically for each new user ******
-      // also located in the /neardev/default/{accountId}.json folder
-      let user_account_privateKey = "ed25519:4biVvSw2X9XEQFkQMswhqh96peznLFTTdZhFRS6ZrPNiGKoFBXzCU9j32myGvxLBH8gosetyHfSBAG34ZwuMan84"
-      let the_user_account = window.accountId;
-
-      window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
-
-      try {
-        let final = await sender.sendMoney(receiver, amount_to_send);
-        console.log(final);
-
-        // console.log('accountBalance');
-        // accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount)*100)/100;
-        // console.log(accountBalance);
-
-        // print out the results
-        console.log("transaction id", final.transaction_outcome.id)
-        console.log("gas used", final.transaction_outcome.outcome.gas_burnt)
-        console.log("success!")
-        alert('success!');
-
-        this.submitMessage();
-      } catch (error) {
-        console.warn(error.type, error.message)
-      }
-    })
-    transactionSaved = await contract.getMessages();
-    // update the table afte transaction completed 
-    rows = transactionSaved;
   }
+
 
   async requestSignIn() {
     const appTitle = 'NEAR React template';
@@ -132,25 +268,6 @@ class App extends Component {
       window.nearConfig.contractName,
       appTitle
     )
-  }
-
-  // -------------------------------------------------------------
-  // use this function to replace other submit message code 
-  submitMessage() {
-    let receiver = $('#transaction-account').val();
-    let amount = $('#transaction-amount').val();
-    let text = $('#transaction-note').val();
-    let datetime = Date(); // if have time, make it display only date time 
-
-    // let account_balance = accountBalance;
-
-    $('#text-message').val('');
-    contract.addMessage({ text, amount, receiver, datetime })
-      .then(() => {
-        setTimeout(() => {
-        }, 1000);
-      })
-      .catch(console.error);
   }
 
   requestSignOut() {
@@ -171,38 +288,53 @@ class App extends Component {
 
   render() {
     let style = {
-      fontSize: "1.5rem",
-      color: "#0072CE",
-      textShadow: "1px 1px #D1CCBD"
+      fontSize: "2rem",
+      color: "#bbbbbb",
+      textShadow: "#eeeeee 1px 5px",
+      textTransform: "uppercase",
+      fontWeight: "bold",
     }
 
     return (
       <div className="App-header">
-        <div className="image-wrapper">
+        <div className="header-row">
           <img className="logo" src={nearlogo} alt="NEAR logo" />
+
+          {this.state.login ? <button className="login-btn" onClick={this.requestSignOut}>Log out</button>
+            : <button  className="login-btn" onClick={this.requestSignIn}>Log in with NEAR</button>}
+          
+          <DropdownButton id="dropdown-settings-button" title="Settings" className="action-btn">
+            <Dropdown.Item href="#/action-1">
+              <TransferTokenModal />
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2">
+              <RequestTokenModal />
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-3"> <ViewAnalysis /></Dropdown.Item>
+          </DropdownButton>
+
+          <DropdownButton id="dropdown-basic-button" title="Action" className="action-btn">
+            <Dropdown.Item href="#/action-1">
+              <TransferTokenModal />
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-2">
+              <RequestTokenModal />
+            </Dropdown.Item>
+            <Dropdown.Item href="#/action-3"> <ViewAnalysis /></Dropdown.Item>
+          </DropdownButton>
+        </div>
+
+        <div className="image-wrapper">
           {/* <p><span role="img" aria-label="fish">🐟</span> NEAR protocol is a new blockchain focused on developer productivity and useability!<span role="img" aria-label="fish">🐟</span></p> */}
           {/* <p><span role="img" aria-label="chain">⛓</span> This little react app is connected to blockchain right now. <span role="img" aria-label="chain">⛓</span></p> */}
           <p style={style}>{this.state.speech}</p>
-        </div>
-        <p> CurrentAccount Balance: {accountBalance}</p>
-        <div>
-          {this.state.login ? <button onClick={this.requestSignOut}>Log out</button>
-            : <button onClick={this.requestSignIn}>Log in with NEAR</button>}
-        </div>
-
-
-        <div>
-          <p> Easy Transfer </p>
-          <input type="text" placeholder="account" id='transaction-account' />
-          <input type="number" placeholder="number of token" id='transaction-amount' />
-          <input type="text" placeholder="note" id='transaction-note' />
-          <button id="new-transaction"> submit </button>
+          <p id="account-balance-statement"> Current Account Balance: {accountBalance}</p>
         </div>
 
         <div className="table">
           <TableContainer component={Paper}>
             <Table className="table" aria-label="simple table">
-              <TableHead>
+              <TableHead className="table-header">
                 <TableRow>
                   <TableCell>Date</TableCell>
                   <TableCell align="right">Sender</TableCell>
@@ -230,28 +362,6 @@ class App extends Component {
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
-
-        <div>
-          {/* <div className="logo-wrapper">
-            <img src={near} className="App-logo margin-logo" alt="logo" />
-            <img src={logo} className="App-logo" alt="logo" />
-          </div> */}
-          <p>
-            {/* Edit <code>src/App.js</code> and save to reload. */}
-          </p>
-          {/* <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a> */}
-          {/* <p><span role="img" aria-label="net">🕸</span> <a className="App-link" href="https://nearprotocol.com">NEAR Website</a> <span role="img" aria-label="net">🕸</span> */}
-          {/* </p> */}
-          {/* <p><span role="img" aria-label="book">📚</span><a className="App-link" href="https://docs.nearprotocol.com"> Learn from NEAR Documentation</a> <span role="img" aria-label="book">📚</span> */}
-          {/* </p> */}
         </div>
       </div>
     )
