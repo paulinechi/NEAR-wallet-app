@@ -13,6 +13,7 @@ export class PostedMessage {
   text: string;
   datetime: string;
   balance: string;
+  type: string;
 }
 
 export class PostedMessageTest {

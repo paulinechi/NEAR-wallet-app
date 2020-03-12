@@ -192,6 +192,46 @@ input {
   font-weight: bold;
 }
 
+
 .action-btn {
   margin-right: 20px;
+}
+
+.icons{
+  width: 21px;
+  margin-left: 15%;
+}
+
+
+.attribute {
+  font-size: 9px;
+  float: right;
+  margin-top: 4px;
+}
+
+.icons-label {
+  font-size: 8px;
+  text-align: center;
+  width: 42px;
+}
+
+.icons-group {
+  border: #eeeeee 2px solid;
+  border-radius: 8px;
+  padding: 0 12px 10px;
+}
+
+.token-type-label {
+  float: left;
+}
+
+.icons-group-div {
+  margin-left: 65px;
+  width: 80%;
+}
+
+.icon-span {
+  display: inline-block;
+  margin: 8px;
+  height: 35px;
 }

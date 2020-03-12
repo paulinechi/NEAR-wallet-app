@@ -24,15 +24,38 @@ import { Button, Modal, DropdownButton, Dropdown } from 'react-bootstrap';
 
 import $ from 'jquery';
 import BN from 'bn.js'
+import moment from 'moment';
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+// icons - spending   
+import groceries from './assets/toilet-paper.png';
+import foodAndDrinks from './assets/juice.png';
+import transport from './assets/train.png';
+import utilities from './assets/house.png';
+import travel from './assets/passport.png';
+import shopping from './assets/shopping-cart.png'; 
+import exercise from './assets/gym.png';
+import beauty from './assets/beauty-treatment.png';
+import medical from './assets/medicine.png';
+import leisure from './assets/bowling-pins.png';
+import education from './assets/diploma.png';
+import pets from './assets/dog.png';
+import gifts from './assets/gift.png';
+import housing from './assets/address.png';
+import other from './assets/menu.png';
 
-function createData(date, description, receiver, amount, balance) {
-  return { date, description, receiver, amount, balance };
+// icons - income 
+// import salary from './assets/toilet-paper.png';
+// import investment from './assets/toilet-paper.png';
+
+
+let rows = [];
+let accountBalance = '';
+let typeOfTransaction = '';
+
+
+function setTransactionType(type){
+  typeOfTransaction = type;
+  console.log(typeOfTransaction);
 }
 
 
@@ -48,7 +71,7 @@ function TransferTokenModal() {
         Transfer Token
       </Button>
 
-      <Modal show={show} onHide={handleClose} animation={false}>
+      <Modal show={show} onHide={handleClose} animation={false} id="transfer-token-modal">
         <Modal.Header closeButton>
           <Modal.Title>Send Token</Modal.Title>
         </Modal.Header>
@@ -63,6 +86,32 @@ function TransferTokenModal() {
           
           <div className='send_token_modal'>
             Note: <input type="text" placeholder=" Note" id='transaction-note' />
+          </div>
+
+          <div className='send_token_modal'>
+            <div className="token-type-label">
+              Type:
+            </div>
+            <div className="icons-group-div">
+              <div className="icons-group">
+                <Button id="groceries" className="icon-span" onClick={() => { typeOfTransaction = 'groceries'; }}><img src={groceries} className="icons" /> <p className="icons-label"> Groceries</p> </Button>
+                <Button id="foodAndDrinks" className="icon-span" onClick={() => { typeOfTransaction = 'foodAndDrinks'; }}><img src={foodAndDrinks} className="icons" /> <p className="icons-label"> Food And Drinks</p> </Button>
+                <Button id="transport" className="icon-span" onClick={() => { typeOfTransaction = 'transport'; }}><img src={transport} className="icons" /> <p className="icons-label"> Transport</p> </Button>
+                <Button id="utilities" className="icon-span" onClick={() => { typeOfTransaction = 'utilities'; }}><img src={utilities} className="icons" /> <p className="icons-label"> Utilities</p> </Button>
+                <Button id="travel" className="icon-span" onClick={() => { typeOfTransaction = 'travel'; }}><img src={travel} className="icons" /> <p className="icons-label"> Travel</p> </Button>
+                <Button id="shopping" className="icon-span" onClick={() => { typeOfTransaction = 'shopping'; }}><img src={shopping} className="icons" /> <p className="icons-label"> Shopping</p> </Button>
+                <Button id="exercise" className="icon-span" onClick={() => { typeOfTransaction = 'exercise'; }}><img src={exercise} className="icons" /> <p className="icons-label"> Exercise</p> </Button>
+                <Button id="beauty" className="icon-span" onClick={() => { typeOfTransaction = 'beauty'; }}><img src={beauty} className="icons" /> <p className="icons-label"> Beauty</p> </Button>
+                <Button id="medical" className="icon-span" onClick={() => { typeOfTransaction = 'medical'; }}><img src={medical} className="icons" /> <p className="icons-label"> Medical</p> </Button>
+                <Button id="leisure" className="icon-span" onClick={() => { typeOfTransaction = 'leisure'; }}><img src={leisure} className="icons" /> <p className="icons-label"> Leisure</p> </Button>
+                <Button id="education" className="icon-span" onClick={() => { typeOfTransaction = 'education'; }}><img src={education} className="icons" /> <p className="icons-label"> Education</p> </Button>
+                <Button id="pets" className="icon-span" onClick={() => { typeOfTransaction = 'pets'; }}><img src={pets} className="icons" /> <p className="icons-label"> Pets</p> </Button>
+                <Button id="gifts" className="icon-span" onClick={() => { typeOfTransaction = 'gifts'; }}><img src={gifts} className="icons" /> <p className="icons-label"> Gifts</p> </Button>
+                <Button id="housing" className="icon-span" onClick={() => { typeOfTransaction = 'housing'; }}><img src={housing} className="icons" /> <p className="icons-label"> Housing</p> </Button>
+                <Button id="other" className="icon-span" onClick={() => { typeOfTransaction = 'other'; }}><img src={other} className="icons" /> <p className="icons-label"> Other</p> </Button>
+              </div>
+              <p className="attribute">Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a> </p>
+            </div>
           </div>
 
         </Modal.Body>
@@ -142,22 +191,16 @@ function ViewAnalysis() {
   );
 }
 
-
-let rows = [];
-let accountBalance = '';
-
-
 async function transferToken() {
   // document.getElementById('new-transaction').addEventListener('click', async () => {
     console.log('click to submit transaction');
     let receiver = document.getElementById('transaction-account').value;
     let tokenAmount = document.getElementById('transaction-amount').value;
     let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
-    console.log(amount_to_send);
 
     // find a way to store this automatically for each new user ******
     // also located in the /neardev/default/{accountId}.json folder
-    let user_account_privateKey = "ed25519:4biVvSw2X9XEQFkQMswhqh96peznLFTTdZhFRS6ZrPNiGKoFBXzCU9j32myGvxLBH8gosetyHfSBAG34ZwuMan84"
+    let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
     let the_user_account = window.accountId;
 
     window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
@@ -167,9 +210,14 @@ async function transferToken() {
     try {
       let final = await sender.sendMoney(receiver, amount_to_send);
       console.log(final);
+      // $('#transfer-token-modal').modal('hide');
 
-      // console.log('accountBalance');
-      accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount) * 100) / 100;
+      // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);  
+      // not sure why the account balance isn't updated immediately after transaction
+      // minus amount to send to get the correct amount for now 
+      
+      accountBalance = Math.round((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) * 100) / 100;
+      console.log((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) );
       console.log(accountBalance);
 
       // print out the results
@@ -194,14 +242,17 @@ function submitMessage(accountBalance) {
   let receiver = $('#transaction-account').val();
   let amount = $('#transaction-amount').val();
   let text = $('#transaction-note').val();
-  let datetime = Date(); // if have time, make it display only date time 
+  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a'); 
+  let type = typeOfTransaction;
 
+  console.log(accountBalance);
+  console.log(type);
   let balance = '' + accountBalance;
   console.log(typeof balance);
 
   console.log(balance);
   $('#text-message').val('');
-  contract.addMessage({ text, amount, receiver, datetime, balance })
+  contract.addMessage({ text, amount, receiver, datetime, balance, type })
     .then(() => {
       setTimeout(() => {
       }, 1000);
@@ -235,9 +286,6 @@ class App extends Component {
 
   async signedInFlow() {
     console.log("come in sign in flow")
-    let transactionSaved = await contract.getMessages();
-    rows = transactionSaved;
-    console.log(rows);
 
     this.setState({
       login: true,
@@ -246,6 +294,15 @@ class App extends Component {
 
     let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
     let sender = await near.account(accountId);
+
+    console.log(accountId);
+    let transactionSaved = await contract.getMessages();
+    for(const eachTransaction of transactionSaved ){
+      if(eachTransaction.sender === accountId || eachTransaction.receiver === accountId){
+        rows.push(eachTransaction);
+      }
+    }
+    console.log(rows);
 
     accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount) * 100) / 100;
     console.log(accountBalance);
@@ -341,6 +398,7 @@ class App extends Component {
                   <TableCell align="right">Description</TableCell>
                   <TableCell align="right">Receiver</TableCell>
                   <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Type</TableCell>
                   <TableCell align="right">Balance</TableCell>
                 </TableRow>
               </TableHead>
@@ -356,6 +414,7 @@ class App extends Component {
                     <TableCell align="right">{row.text}</TableCell>
                     <TableCell align="right">{row.receiver}</TableCell>
                     <TableCell align="right">{row.amount}</TableCell>
+                    <TableCell align="right">{row.type}</TableCell>
                     <TableCell align="right">{row.balance}</TableCell>
                   </TableRow>
                 ))}

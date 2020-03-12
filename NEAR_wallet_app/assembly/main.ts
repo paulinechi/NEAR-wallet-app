@@ -32,7 +32,7 @@ function printString(s: string): string {
 
 
 // ------------------------- old function from Near wallet ----------------
-export function addMessage(text: string, amount: string, receiver: string, datetime: string, balance: string): void {
+export function addMessage(text: string, amount: string, receiver: string, datetime: string, balance: string, type: string): void {
   // Creating a new message and populating fields with our data
   const message: PostedMessage = {
     sender: context.sender,
@@ -40,7 +40,8 @@ export function addMessage(text: string, amount: string, receiver: string, datet
     amount: amount,
     text: text,
     datetime: datetime,
-    balance: balance
+    balance: balance,
+    type: type
   };
 
   // Adding the message to end of the the persistent collection
@@ -52,7 +53,7 @@ export function addMessage(text: string, amount: string, receiver: string, datet
 // NOTE: This is a view method. Which means it should NOT modify the state.
 export function getMessages(): PostedMessage[] {
   // const numMessages = min(MESSAGE_LIMIT, messages.length);
-  const numMessages = min(5, messages.length);
+  const numMessages = messages.length;
 
   const startIndex = messages.length - numMessages;
   const result = new Array<PostedMessage>(numMessages);
