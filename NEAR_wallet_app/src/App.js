@@ -4,7 +4,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component, useState } from 'react';
 import logo from './assets/logo.svg';
 import nearlogo from './assets/gray_near_logo.svg';
-import near from './assets/near.svg';
 import './App.css';
 import * as nearlib from 'nearlib';
 
@@ -51,7 +50,9 @@ import other from './assets/menu.png';
 let rows = [];
 let accountBalance = '';
 let typeOfTransaction = '';
-
+let requestAlert = false; // set this on blockchain, now it'll reset everytime refreshed
+let requestSender = '';
+let requestAmount = '';
 
 function setTransactionType(type){
   typeOfTransaction = type;
@@ -145,31 +146,80 @@ function RequestTokenModal() {
 
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Token</Modal.Title>
+          <Modal.Title>Request Token</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className='send_token_modal'>
-            Account to send to: <input type="text" placeholder=" Account" id='transaction-account' />
+            Account request from: <input type="text" placeholder=" Account" id='request-account' />
           </div>
 
           <div className='send_token_modal'>
-            Amount: <input type="number" placeholder=" Number of token" id='transaction-amount' />
+            Amount: <input type="number" placeholder=" Number of token" id='request-amount' />
           </div>
-          
-          <div className='send_token_modal'>
-            Note: <input type="text" placeholder=" Note" id='transaction-note' />
-          </div>
-
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <button id="new-transaction" variant="primary" onClick={transferToken}>
+          <button id="new-transaction" variant="primary" onClick={requestToken}>
             Confirm
           </button>
         </Modal.Footer>
       </Modal>
+    </>
+  );
+}
+
+
+function RequestTokenNotificationModal() {
+  console.log('request notification');
+  // console.log(requestSender, requestAmount);
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Button variant="primary" onClick={handleShow} className='request-token-notification-btn'>
+        <span>Message</span>
+        { requestAlert &&
+          <span className="badge" >1</span>
+        }
+      </Button>
+
+      {requestAlert &&
+        <Modal show={show} onHide={handleClose} animation={false}>
+          <Modal.Header closeButton>
+            <Modal.Title>You have one new token request</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className='send_token_modal'>
+              Request sent from: {requestSender}
+            </div>
+
+            <div className='send_token_modal'>
+              Amount: {requestAmount}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => {
+              handleClose();
+              requestAlert = false;
+            }}>
+              Dismiss
+          </Button>
+            {/* <button id="new-transaction" variant="primary" onClick={() => {
+              return (
+                <TransferTokenModal />
+              )
+            }}>
+              Transfer
+          </button> */}
+          </Modal.Footer>
+        </Modal>
+      }
     </>
   );
 }
@@ -238,6 +288,50 @@ async function transferToken() {
 }
 
 
+
+async function requestToken() {
+    console.log('click to request transaction');
+    let requestAccount = document.getElementById('request-account').value;
+    let amount_to_send = 0;
+
+    let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
+    let the_user_account = window.accountId;
+
+    window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
+    let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
+    let sender = await near.account(accountId);
+
+    try {
+      let final = await sender.sendMoney(requestAccount, amount_to_send);
+      console.log(final);
+
+      alert('success!');
+      postRequestMessage();
+    } catch (error) {
+      console.warn(error.type, error.message)
+    }
+}
+
+
+function postRequestMessage() {
+  let receiver = $('#request-account').val();
+  let amount = '0';
+  let text = 'Request token amount: ' + $('#request-amount').val();
+  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a'); 
+  let type = 'Request Token';
+
+  let balance = '';
+
+  $('#text-message').val('');
+  contract.addMessage({ text, amount, receiver, datetime, balance, type })
+    .then(() => {
+      setTimeout(() => {
+      }, 1000);
+    })
+    .catch(console.error);
+}
+
+
 function submitMessage(accountBalance) {
   let receiver = $('#transaction-account').val();
   let amount = $('#transaction-amount').val();
@@ -298,8 +392,13 @@ class App extends Component {
     console.log(accountId);
     let transactionSaved = await contract.getMessages();
     for(const eachTransaction of transactionSaved ){
-      if(eachTransaction.sender === accountId || eachTransaction.receiver === accountId){
+      if((eachTransaction.sender === accountId || eachTransaction.receiver === accountId) && eachTransaction.type !== 'Request Token' ){
         rows.push(eachTransaction);
+      }
+      if(eachTransaction.type === 'Request Token' && eachTransaction.receiver === accountId){
+        requestAlert = true;
+        requestSender = eachTransaction.sender;
+        requestAmount = eachTransaction.text;
       }
     }
     console.log(rows);
@@ -359,6 +458,8 @@ class App extends Component {
 
           {this.state.login ? <button className="login-btn" onClick={this.requestSignOut}>Log out</button>
             : <button  className="login-btn" onClick={this.requestSignIn}>Log in with NEAR</button>}
+          
+          <RequestTokenNotificationModal />
           
           <DropdownButton id="dropdown-settings-button" title="Settings" className="action-btn">
             <Dropdown.Item href="#/action-1">

@@ -235,3 +235,25 @@ input {
   margin: 8px;
   height: 35px;
 }
+
+.request-token-notification-btn {
+  display: inline;
+  float: left;
+  width: 80px;
+  font-size: 12px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+  background-color: initial;
+  color: aliceblue;
+}
+
+.badge {
+  position: absolute !important ;
+  top: -10px;
+  right: -10px;
+  padding: 5px 8px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
