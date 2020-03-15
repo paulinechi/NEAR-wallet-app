@@ -59,9 +59,9 @@ p {
 
 button {
   padding: 2.5px 8px;
-  color: #0072CE;
+  color: #29a8ab;
   border-radius: 0.25rem;
-  border: 3px solid #0072CE;
+  border: 3px solid #29a8ab;
 }
 
 button:hover {
@@ -256,4 +256,38 @@ input {
   border-radius: 50%;
   background-color: red;
   color: white;
+}
+
+.changeViewBtn {
+  width: 180px;
+}
+
+.viewBtnWrapper{
+  margin-bottom: -49px;
+  margin-top: 42px;
+  float: left;
+  margin-left: -45px;
+}
+
+#viewAnalysisBtn {
+  margin-left: 2px;
+}
+
+
+.pieChartMarginTop {
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+.views{
+  background-color: white;
+}
+
+.loadAllTransactionBtn{
+  float: right;
+  margin-bottom: 20px;
+  background-color: #fe8a71;
+  color: white;
+  font-size: 10px;
+  margin-left: 10px;
 }

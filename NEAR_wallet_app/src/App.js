@@ -6,6 +6,7 @@ import logo from './assets/logo.svg';
 import nearlogo from './assets/gray_near_logo.svg';
 import './App.css';
 import * as nearlib from 'nearlib';
+import ReactDOM from 'react-dom';
 
 
 import { useTable } from 'react-table'
@@ -25,13 +26,16 @@ import $ from 'jquery';
 import BN from 'bn.js'
 import moment from 'moment';
 
+import Chart from './Chart';
+import PieChart from './PieChart';
+
 // icons - spending   
 import groceries from './assets/toilet-paper.png';
 import foodAndDrinks from './assets/juice.png';
 import transport from './assets/train.png';
 import utilities from './assets/house.png';
 import travel from './assets/passport.png';
-import shopping from './assets/shopping-cart.png'; 
+import shopping from './assets/shopping-cart.png';
 import exercise from './assets/gym.png';
 import beauty from './assets/beauty-treatment.png';
 import medical from './assets/medicine.png';
@@ -53,12 +57,35 @@ let typeOfTransaction = '';
 let requestAlert = false; // set this on blockchain, now it'll reset everytime refreshed
 let requestSender = '';
 let requestAmount = '';
+let viewTransaction = false;
+let viewAnalysis = false;
 
-function setTransactionType(type){
+function setTransactionType(type) {
   typeOfTransaction = type;
   console.log(typeOfTransaction);
 }
 
+
+function GetChart(rows) {
+  console.log(rows);
+  return document.getElementsByClassName('insertChart').innerHTML = <Chart rows={rows} />;
+}
+
+function refreshPage() {
+  window.location.reload(false);
+}
+
+
+function ChangeViewAnalysis() {
+  return (
+    <>
+      <div className="pieChartMarginTop" >
+        <PieChart />
+      </div>
+      <GetChart rows={rows} />
+    </>
+  )
+}
 
 function TransferTokenModal() {
   const [show, setShow] = useState(false);
@@ -84,7 +111,7 @@ function TransferTokenModal() {
           <div className='send_token_modal'>
             Amount: <input type="number" placeholder=" Number of token" id='transaction-amount' />
           </div>
-          
+
           <div className='send_token_modal'>
             Note: <input type="text" placeholder=" Note" id='transaction-note' />
           </div>
@@ -184,7 +211,7 @@ function RequestTokenNotificationModal() {
     <>
       <Button variant="primary" onClick={handleShow} className='request-token-notification-btn'>
         <span>Message</span>
-        { requestAlert &&
+        {requestAlert &&
           <span className="badge" >1</span>
         }
       </Button>
@@ -224,62 +251,46 @@ function RequestTokenNotificationModal() {
   );
 }
 
-
-function ViewAnalysis() {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  return (
-    <>
-      <Button variant="primary" onClick={handleShow} className='transfer-token-btn'>
-        View Analysis
-      </Button>
-      {/* shouldn't be a modal, change the transaction table view */}
-    </>
-  );
-}
-
 async function transferToken() {
   // document.getElementById('new-transaction').addEventListener('click', async () => {
-    console.log('click to submit transaction');
-    let receiver = document.getElementById('transaction-account').value;
-    let tokenAmount = document.getElementById('transaction-amount').value;
-    let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
+  console.log('click to submit transaction');
+  let receiver = document.getElementById('transaction-account').value;
+  let tokenAmount = document.getElementById('transaction-amount').value;
+  let amount_to_send = nearlib.utils.format.parseNearAmount(tokenAmount);
 
-    // find a way to store this automatically for each new user ******
-    // also located in the /neardev/default/{accountId}.json folder
-    let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
-    let the_user_account = window.accountId;
+  // find a way to store this automatically for each new user ******
+  // also located in the /neardev/default/{accountId}.json folder
+  let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
+  let the_user_account = window.accountId;
 
-    window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
-    let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
-    let sender = await near.account(accountId);
+  window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
+  let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
+  let sender = await near.account(accountId);
 
-    try {
-      let final = await sender.sendMoney(receiver, amount_to_send);
-      console.log(final);
-      // $('#transfer-token-modal').modal('hide');
+  try {
+    let final = await sender.sendMoney(receiver, amount_to_send);
+    console.log(final);
+    // $('#transfer-token-modal').modal('hide');
 
-      // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);  
-      // not sure why the account balance isn't updated immediately after transaction
-      // minus amount to send to get the correct amount for now 
-      
-      accountBalance = Math.round((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) * 100) / 100;
-      console.log((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) );
-      console.log(accountBalance);
+    // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);  
+    // not sure why the account balance isn't updated immediately after transaction
+    // minus amount to send to get the correct amount for now 
 
-      // print out the results
-      console.log("transaction id", final.transaction_outcome.id)
-      console.log("gas used", final.transaction_outcome.outcome.gas_burnt)
-      console.log("success!")
-      alert('success!');
+    accountBalance = Math.round((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) * 100) / 100;
+    console.log((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount));
+    console.log(accountBalance);
 
-      submitMessage(accountBalance);
-    } catch (error) {
-      console.warn(error.type, error.message)
-    }
+    // print out the results
+    console.log("transaction id", final.transaction_outcome.id)
+    console.log("gas used", final.transaction_outcome.outcome.gas_burnt)
+    console.log("success!")
+    alert('success!');
+
+    submitMessage(accountBalance);
+    refreshPage();
+  } catch (error) {
+    console.warn(error.type, error.message)
+  }
 
   // })
   // transactionSaved = await contract.getMessages();
@@ -290,26 +301,26 @@ async function transferToken() {
 
 
 async function requestToken() {
-    console.log('click to request transaction');
-    let requestAccount = document.getElementById('request-account').value;
-    let amount_to_send = 0;
+  console.log('click to request transaction');
+  let requestAccount = document.getElementById('request-account').value;
+  let amount_to_send = 0;
 
-    let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
-    let the_user_account = window.accountId;
+  let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
+  let the_user_account = window.accountId;
 
-    window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
-    let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
-    let sender = await near.account(accountId);
+  window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
+  let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
+  let sender = await near.account(accountId);
 
-    try {
-      let final = await sender.sendMoney(requestAccount, amount_to_send);
-      console.log(final);
+  try {
+    let final = await sender.sendMoney(requestAccount, amount_to_send);
+    console.log(final);
 
-      alert('success!');
-      postRequestMessage();
-    } catch (error) {
-      console.warn(error.type, error.message)
-    }
+    alert('success!');
+    postRequestMessage();
+  } catch (error) {
+    console.warn(error.type, error.message)
+  }
 }
 
 
@@ -317,7 +328,7 @@ function postRequestMessage() {
   let receiver = $('#request-account').val();
   let amount = '0';
   let text = 'Request token amount: ' + $('#request-amount').val();
-  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a'); 
+  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a');
   let type = 'Request Token';
 
   let balance = '';
@@ -336,7 +347,7 @@ function submitMessage(accountBalance) {
   let receiver = $('#transaction-account').val();
   let amount = $('#transaction-amount').val();
   let text = $('#transaction-note').val();
-  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a'); 
+  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a');
   let type = typeOfTransaction;
 
   console.log(accountBalance);
@@ -360,12 +371,19 @@ class App extends Component {
     super(props);
     this.state = {
       login: false,
-      speech: null
+      speech: null,
+      showComponent: false,
+      showAnalysis: true,
+      showTransaction: false,
     }
     this.signedInFlow = this.signedInFlow.bind(this);
     this.requestSignIn = this.requestSignIn.bind(this);
     this.requestSignOut = this.requestSignOut.bind(this);
     this.signedOutFlow = this.signedOutFlow.bind(this);
+    this._onButtonClickAnalysis = this._onButtonClickAnalysis.bind(this);
+    this._onButtonClickTransaction = this._onButtonClickTransaction.bind(this);
+    this.getAllTransaction = this.getAllTransaction.bind(this);
+    this.getRecentTransaction = this.getRecentTransaction.bind(this);
   }
 
 
@@ -390,12 +408,13 @@ class App extends Component {
     let sender = await near.account(accountId);
 
     console.log(accountId);
-    let transactionSaved = await contract.getMessages();
-    for(const eachTransaction of transactionSaved ){
-      if((eachTransaction.sender === accountId || eachTransaction.receiver === accountId) && eachTransaction.type !== 'Request Token' ){
-        rows.push(eachTransaction);
+    let messageLength = 13;
+    let transactionSaved = await contract.getMessages({ messageLimit: messageLength });
+    for (const eachTransaction of transactionSaved) {
+      if ((eachTransaction.sender === accountId || eachTransaction.receiver === accountId) && eachTransaction.type !== 'Request Token') {
+        await rows.push(eachTransaction);
       }
-      if(eachTransaction.type === 'Request Token' && eachTransaction.receiver === accountId){
+      if (eachTransaction.type === 'Request Token' && eachTransaction.receiver === accountId) {
         requestAlert = true;
         requestSender = eachTransaction.sender;
         requestAmount = eachTransaction.text;
@@ -442,6 +461,62 @@ class App extends Component {
     })
   }
 
+  _onButtonClickAnalysis() {
+    this.setState({
+      showAnalysis: true,
+      showTransaction: false,
+    });
+  }
+
+  _onButtonClickTransaction() {
+    this.setState({
+      showTransaction: true,
+      showAnalysis: false,
+    });
+  }
+
+  async getAllTransaction() {
+    console.log('load get all transaction');
+    // give it a very big number, so min(messageLimit, messages.length) will return messages.length
+    let loadAll = 10000;
+    let transactionLoaded = await contract.getMessages({ messageLimit: loadAll })
+
+    rows = [];
+    for (const eachTransaction of transactionLoaded) {
+      if ((eachTransaction.sender === accountId || eachTransaction.receiver === accountId) && eachTransaction.type !== 'Request Token') {
+        await rows.push(eachTransaction);
+      }
+      if (eachTransaction.type === 'Request Token' && eachTransaction.receiver === accountId) {
+        requestAlert = true;
+        requestSender = eachTransaction.sender;
+        requestAmount = eachTransaction.text;
+      }
+    }
+    console.log('new rows');
+    console.log(rows);
+    this._onButtonClickAnalysis();
+  }
+
+  async getRecentTransaction() {
+    let loadRecent = 13;
+    let transactionLoaded = await contract.getMessages({ messageLimit: loadRecent })
+
+    rows = [];
+    for (const eachTransaction of transactionLoaded) {
+      if ((eachTransaction.sender === accountId || eachTransaction.receiver === accountId) && eachTransaction.type !== 'Request Token') {
+        await rows.push(eachTransaction);
+      }
+      if (eachTransaction.type === 'Request Token' && eachTransaction.receiver === accountId) {
+        requestAlert = true;
+        requestSender = eachTransaction.sender;
+        requestAmount = eachTransaction.text;
+      }
+    }
+    console.log('new rows');
+    console.log(rows);
+    this._onButtonClickAnalysis();
+  }
+
   render() {
     let style = {
       fontSize: "2rem",
@@ -457,19 +532,9 @@ class App extends Component {
           <img className="logo" src={nearlogo} alt="NEAR logo" />
 
           {this.state.login ? <button className="login-btn" onClick={this.requestSignOut}>Log out</button>
-            : <button  className="login-btn" onClick={this.requestSignIn}>Log in with NEAR</button>}
-          
+            : <button className="login-btn" onClick={this.requestSignIn}>Log in with NEAR</button>}
+
           <RequestTokenNotificationModal />
-          
-          <DropdownButton id="dropdown-settings-button" title="Settings" className="action-btn">
-            <Dropdown.Item href="#/action-1">
-              <TransferTokenModal />
-            </Dropdown.Item>
-            <Dropdown.Item href="#/action-2">
-              <RequestTokenModal />
-            </Dropdown.Item>
-            <Dropdown.Item href="#/action-3"> <ViewAnalysis /></Dropdown.Item>
-          </DropdownButton>
 
           <DropdownButton id="dropdown-basic-button" title="Action" className="action-btn">
             <Dropdown.Item href="#/action-1">
@@ -478,51 +543,72 @@ class App extends Component {
             <Dropdown.Item href="#/action-2">
               <RequestTokenModal />
             </Dropdown.Item>
-            <Dropdown.Item href="#/action-3"> <ViewAnalysis /></Dropdown.Item>
           </DropdownButton>
         </div>
 
         <div className="image-wrapper">
-          {/* <p><span role="img" aria-label="fish">🐟</span> NEAR protocol is a new blockchain focused on developer productivity and useability!<span role="img" aria-label="fish">🐟</span></p> */}
-          {/* <p><span role="img" aria-label="chain">⛓</span> This little react app is connected to blockchain right now. <span role="img" aria-label="chain">⛓</span></p> */}
           <p style={style}>{this.state.speech}</p>
           <p id="account-balance-statement"> Current Account Balance: {accountBalance}</p>
+
+          <div className="viewBtnWrapper">
+            <Button ref="viewTransactionBtn" id="viewTransactionBtn" className="changeViewBtn" onClick={this._onButtonClickAnalysis} > View Transaction</Button>
+            <Button ref="viewAnalysisBtn" id="viewAnalysisBtn" className="changeViewBtn" onClick={this._onButtonClickTransaction}> View Analysis</Button>
+          </div>
         </div>
 
-        <div className="table">
-          <TableContainer component={Paper}>
-            <Table className="table" aria-label="simple table">
-              <TableHead className="table-header">
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell align="right">Sender</TableCell>
-                  <TableCell align="right">Description</TableCell>
-                  <TableCell align="right">Receiver</TableCell>
-                  <TableCell align="right">Amount</TableCell>
-                  <TableCell align="right">Type</TableCell>
-                  <TableCell align="right">Balance</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map(row => (
-                  <TableRow key={Math.random()}>
-                    {/* <TableRow key={row.datetime} */}
-                    {/* change the unique key to the transaction id/date later  */}
-                    <TableCell component="th" scope="row">
-                      {row.datetime}
-                    </TableCell>
-                    <TableCell align="right">{row.sender}</TableCell>
-                    <TableCell align="right">{row.text}</TableCell>
-                    <TableCell align="right">{row.receiver}</TableCell>
-                    <TableCell align="right">{row.amount}</TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    <TableCell align="right">{row.balance}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <div className="views">
+          {this.state.showTransaction ?
+            <ChangeViewAnalysis /> :
+            null
+          }
+
+          {this.state.showAnalysis ?
+            <div>
+              <div className="table">
+                <TableContainer component={Paper}>
+                  <Table className="table" aria-label="simple table">
+                    <TableHead className="table-header">
+                      <TableRow>
+                        <TableCell>Date</TableCell>
+                        <TableCell align="right">Sender</TableCell>
+                        <TableCell align="right">Description</TableCell>
+                        <TableCell align="right">Receiver</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                        <TableCell align="right">Type</TableCell>
+                        <TableCell align="right">Balance</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map(row => (
+                        <TableRow key={Math.random()}>
+                          {/* <TableRow key={row.datetime} */}
+                          {/* change the unique key to the transaction id/date later  */}
+                          <TableCell component="th" scope="row">
+                            {row.datetime}
+                          </TableCell>
+                          <TableCell align="right">{row.sender}</TableCell>
+                          <TableCell align="right">{row.text}</TableCell>
+                          <TableCell align="right">{row.receiver}</TableCell>
+                          <TableCell align="right">{row.amount}</TableCell>
+                          <TableCell align="right">{row.type}</TableCell>
+                          <TableCell align="right">{row.balance}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+
+              <Button onClick={this.getAllTransaction} className="loadAllTransactionBtn"> Load All Transactions </Button>
+              <Button onClick={this.getRecentTransaction} className="loadAllTransactionBtn"> Show Recent Transactions </Button>
+            </div>
+
+            :
+            null
+          }
         </div>
+
+        <div className="insertChart"></div>
       </div>
     )
   }
