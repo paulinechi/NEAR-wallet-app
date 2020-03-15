@@ -287,7 +287,7 @@ async function transferToken() {
     alert('success!');
 
     submitMessage(accountBalance);
-    refreshPage();
+    // refreshPage();
   } catch (error) {
     console.warn(error.type, error.message)
   }
@@ -360,7 +360,8 @@ function submitMessage(accountBalance) {
   contract.addMessage({ text, amount, receiver, datetime, balance, type })
     .then(() => {
       setTimeout(() => {
-      }, 1000);
+        refreshPage();
+      }, 100);
     })
     .catch(console.error);
 }
