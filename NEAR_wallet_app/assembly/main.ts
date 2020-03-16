@@ -51,9 +51,15 @@ export function addMessage(text: string, amount: string, receiver: string, datet
 
 // Returns an array of last N messages.
 // NOTE: This is a view method. Which means it should NOT modify the state.
-export function getMessages(): PostedMessage[] {
+export function getMessages(messageLimit: i32 ): PostedMessage[] {
   // const numMessages = min(MESSAGE_LIMIT, messages.length);
-  const numMessages = messages.length;
+  logging.log('message limit -----');
+  logging.log(messageLimit.toString());
+
+  const numMessages = min(messageLimit, messages.length);
+  logging.log(numMessages.toString());
+  
+  // const numMessages = messages.length;
 
   const startIndex = messages.length - numMessages;
   const result = new Array<PostedMessage>(numMessages);
