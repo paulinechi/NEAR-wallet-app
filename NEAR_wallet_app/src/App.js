@@ -25,13 +25,13 @@ import $ from 'jquery';
 import BN from 'bn.js'
 import moment from 'moment';
 
-// icons - spending   
+// icons - spending
 import groceries from './assets/toilet-paper.png';
 import foodAndDrinks from './assets/juice.png';
 import transport from './assets/train.png';
 import utilities from './assets/house.png';
 import travel from './assets/passport.png';
-import shopping from './assets/shopping-cart.png'; 
+import shopping from './assets/shopping-cart.png';
 import exercise from './assets/gym.png';
 import beauty from './assets/beauty-treatment.png';
 import medical from './assets/medicine.png';
@@ -42,7 +42,7 @@ import gifts from './assets/gift.png';
 import housing from './assets/address.png';
 import other from './assets/menu.png';
 
-// icons - income 
+// icons - income
 // import salary from './assets/toilet-paper.png';
 // import investment from './assets/toilet-paper.png';
 
@@ -58,7 +58,6 @@ function setTransactionType(type){
   typeOfTransaction = type;
   console.log(typeOfTransaction);
 }
-
 
 function TransferTokenModal() {
   const [show, setShow] = useState(false);
@@ -84,7 +83,7 @@ function TransferTokenModal() {
           <div className='send_token_modal'>
             Amount: <input type="number" placeholder=" Number of token" id='transaction-amount' />
           </div>
-          
+
           <div className='send_token_modal'>
             Note: <input type="text" placeholder=" Note" id='transaction-note' />
           </div>
@@ -129,9 +128,6 @@ function TransferTokenModal() {
   );
 }
 
-
-
-
 function RequestTokenModal() {
   const [show, setShow] = useState(false);
 
@@ -170,12 +166,11 @@ function RequestTokenModal() {
   );
 }
 
-
 function RequestTokenNotificationModal() {
   console.log('request notification');
   // console.log(requestSender, requestAmount);
 
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -224,7 +219,6 @@ function RequestTokenNotificationModal() {
   );
 }
 
-
 function ViewAnalysis() {
   const [show, setShow] = useState(false);
 
@@ -250,8 +244,8 @@ async function transferToken() {
 
     // find a way to store this automatically for each new user ******
     // also located in the /neardev/default/{accountId}.json folder
-    let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
     let the_user_account = window.accountId;
+    let user_account_privateKey = "ed25519:Z9C2WQQWiZt4vtVVHjMSmJ6dzL2yjVv7UZZPYviyEwyFTzG9knV4rrhmLKqne7b8AueW2ymx3kLhjG47Zzni6Sm"//window.localStorage.getItem(`nearlib:keystore:${the_user_account}:default`)
 
     window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
     let near = await nearlib.connect(Object.assign({ deps: { keyStore: new nearlib.keyStores.BrowserLocalStorageKeyStore() } }, window.nearConfig));
@@ -260,12 +254,11 @@ async function transferToken() {
     try {
       let final = await sender.sendMoney(receiver, amount_to_send);
       console.log(final);
-      // $('#transfer-token-modal').modal('hide');
 
-      // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);  
+      // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);
       // not sure why the account balance isn't updated immediately after transaction
-      // minus amount to send to get the correct amount for now 
-      
+      // minus amount to send to get the correct amount for now
+
       accountBalance = Math.round((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) * 100) / 100;
       console.log((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) );
       console.log(accountBalance);
@@ -275,26 +268,23 @@ async function transferToken() {
       console.log("gas used", final.transaction_outcome.outcome.gas_burnt)
       console.log("success!")
       alert('success!');
-
       submitMessage(accountBalance);
+      handleClose();
     } catch (error) {
       console.warn(error.type, error.message)
     }
-
   // })
   // transactionSaved = await contract.getMessages();
-  // // update the table afte transaction completed 
+  // // update the table afte transaction completed
   // rows = transactionSaved;
 }
-
-
 
 async function requestToken() {
     console.log('click to request transaction');
     let requestAccount = document.getElementById('request-account').value;
     let amount_to_send = 0;
 
-    let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
+    let user_account_privateKey = "ed25519:Z9C2WQQWiZt4vtVVHjMSmJ6dzL2yjVv7UZZPYviyEwyFTzG9knV4rrhmLKqne7b8AueW2ymx3kLhjG47Zzni6Sm"
     let the_user_account = window.accountId;
 
     window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
@@ -312,12 +302,11 @@ async function requestToken() {
     }
 }
 
-
 function postRequestMessage() {
   let receiver = $('#request-account').val();
   let amount = '0';
   let text = 'Request token amount: ' + $('#request-amount').val();
-  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a'); 
+  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a');
   let type = 'Request Token';
 
   let balance = '';
@@ -331,12 +320,11 @@ function postRequestMessage() {
     .catch(console.error);
 }
 
-
 function submitMessage(accountBalance) {
   let receiver = $('#transaction-account').val();
   let amount = $('#transaction-amount').val();
   let text = $('#transaction-note').val();
-  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a'); 
+  let datetime = moment().format('MMMM Do YYYY, h:mm:ss a');
   let type = typeOfTransaction;
 
   console.log(accountBalance);
@@ -353,7 +341,6 @@ function submitMessage(accountBalance) {
     })
     .catch(console.error);
 }
-
 
 class App extends Component {
   constructor(props) {
@@ -405,7 +392,7 @@ class App extends Component {
 
     accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount) * 100) / 100;
     console.log(accountBalance);
-    // let accountDetails = await sender.getAccountDetails(); // get authorizedApps: [], transactions: [] can add later 
+    // let accountDetails = await sender.getAccountDetails(); // get authorizedApps: [], transactions: [] can add later
 
     if (window.location.search.includes("account_id")) {
       window.location.replace(window.location.origin + window.location.pathname)
@@ -458,9 +445,9 @@ class App extends Component {
 
           {this.state.login ? <button className="login-btn" onClick={this.requestSignOut}>Log out</button>
             : <button  className="login-btn" onClick={this.requestSignIn}>Log in with NEAR</button>}
-          
+
           <RequestTokenNotificationModal />
-          
+
           <DropdownButton id="dropdown-settings-button" title="Settings" className="action-btn">
             <Dropdown.Item href="#/action-1">
               <TransferTokenModal />
