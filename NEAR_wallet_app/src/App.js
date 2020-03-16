@@ -80,7 +80,7 @@ function ChangeViewAnalysis() {
   return (
     <>
       <div className="pieChartMarginTop" >
-        <PieChart />
+        <PieChart rows={rows}/>
       </div>
       <GetChart rows={rows} />
     </>
