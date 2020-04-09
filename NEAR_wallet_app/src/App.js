@@ -29,7 +29,7 @@ import moment from 'moment';
 import Chart from './Chart';
 import PieChart from './PieChart';
 
-// icons - spending   
+// icons - spending
 import groceries from './assets/toilet-paper.png';
 import foodAndDrinks from './assets/juice.png';
 import transport from './assets/train.png';
@@ -46,7 +46,7 @@ import gifts from './assets/gift.png';
 import housing from './assets/address.png';
 import other from './assets/menu.png';
 
-// icons - income 
+// icons - income
 // import salary from './assets/toilet-paper.png';
 // import investment from './assets/toilet-paper.png';
 
@@ -80,7 +80,7 @@ function ChangeViewAnalysis() {
   return (
     <>
       <div className="pieChartMarginTop" >
-        <PieChart />
+        <PieChart rows={rows}/>
       </div>
       <GetChart rows={rows} />
     </>
@@ -156,9 +156,6 @@ function TransferTokenModal() {
   );
 }
 
-
-
-
 function RequestTokenModal() {
   const [show, setShow] = useState(false);
 
@@ -197,12 +194,11 @@ function RequestTokenModal() {
   );
 }
 
-
 function RequestTokenNotificationModal() {
   console.log('request notification');
   // console.log(requestSender, requestAmount);
 
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -260,7 +256,7 @@ async function transferToken() {
 
   // find a way to store this automatically for each new user ******
   // also located in the /neardev/default/{accountId}.json folder
-  let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
+  let user_account_privateKey = "ed25519:Z9C2WQQWiZt4vtVVHjMSmJ6dzL2yjVv7UZZPYviyEwyFTzG9knV4rrhmLKqne7b8AueW2ymx3kLhjG47Zzni6Sm"
   let the_user_account = window.accountId;
 
   window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
@@ -272,9 +268,9 @@ async function transferToken() {
     console.log(final);
     // $('#transfer-token-modal').modal('hide');
 
-    // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);  
+    // accountBalance = nearlib.utils.format.formatNearAmount(sender._state.amount);
     // not sure why the account balance isn't updated immediately after transaction
-    // minus amount to send to get the correct amount for now 
+    // minus amount to send to get the correct amount for now
 
     accountBalance = Math.round((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount) * 100) / 100;
     console.log((nearlib.utils.format.formatNearAmount(sender._state.amount) - tokenAmount));
@@ -294,18 +290,16 @@ async function transferToken() {
 
   // })
   // transactionSaved = await contract.getMessages();
-  // // update the table afte transaction completed 
+  // // update the table afte transaction completed
   // rows = transactionSaved;
 }
-
-
 
 async function requestToken() {
   console.log('click to request transaction');
   let requestAccount = document.getElementById('request-account').value;
   let amount_to_send = 0;
 
-  let user_account_privateKey = "ed25519:fm46Vy8oggt9qLqUze5R7DDiKm99eHCwaYFyhRa3UZsA83R8oTzWYotw66RQXzJ2Arz44KY5zxBwuuY6aqQUJS5"
+  let user_account_privateKey = "ed25519:Z9C2WQQWiZt4vtVVHjMSmJ6dzL2yjVv7UZZPYviyEwyFTzG9knV4rrhmLKqne7b8AueW2ymx3kLhjG47Zzni6Sm"
   let the_user_account = window.accountId;
 
   window.localStorage.setItem(`nearlib:keystore:${the_user_account}:default`, user_account_privateKey)
@@ -322,7 +316,6 @@ async function requestToken() {
     console.warn(error.type, error.message)
   }
 }
-
 
 function postRequestMessage() {
   let receiver = $('#request-account').val();
@@ -341,7 +334,6 @@ function postRequestMessage() {
     })
     .catch(console.error);
 }
-
 
 function submitMessage(accountBalance) {
   let receiver = $('#transaction-account').val();
@@ -365,7 +357,6 @@ function submitMessage(accountBalance) {
     })
     .catch(console.error);
 }
-
 
 class App extends Component {
   constructor(props) {
@@ -425,7 +416,7 @@ class App extends Component {
 
     accountBalance = Math.round(nearlib.utils.format.formatNearAmount(sender._state.amount) * 100) / 100;
     console.log(accountBalance);
-    // let accountDetails = await sender.getAccountDetails(); // get authorizedApps: [], transactions: [] can add later 
+    // let accountDetails = await sender.getAccountDetails(); // get authorizedApps: [], transactions: [] can add later
 
     if (window.location.search.includes("account_id")) {
       window.location.replace(window.location.origin + window.location.pathname)

@@ -1,4 +1,4 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME ||'NEAR_wallet_app';
+const CONTRACT_NAME = process.env.CONTRACT_NAME ||'dev-1584197752297';
 
 function getConfig(env) {
     switch (env) {

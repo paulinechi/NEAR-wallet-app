@@ -16,6 +16,17 @@ export class PostedMessage {
   type: string;
 }
 
+export class SharedTab {
+  peopleList: Array<string>;
+  transactionList: PersistentVector<Transaction>;
+}
+
+export class Transaction {
+  amount: string;
+  message: string;
+  spender: string;
+}
+
 export class PostedMessageTest {
   sender: string;
   // receiver: string;

@@ -1,12 +1,12 @@
 import { context, logging, storage, runtime_api, PersistentVector, PersistentMap, collections  } from "near-runtime-ts";
-// available class: near, context, storage, logging, base58, base64, 
+// available class: near, context, storage, logging, base58, base64,
 // PersistentMap, PersistentVector, PersistentDeque, PersistentTopN, ContractPromise, math
 import { TextMessage } from "./model";
 import { PostedMessage, PostedMessageTest, MessageArray } from "./model";
 
 const DEFAULT_MESSAGE = "WELCOME"
 const LAST_SENDER_KEY = "last_sender"; // not used
-const MESSAGE_LIMIT = 10; // change this after we have proper pagination 
+const MESSAGE_LIMIT = 10; // change this after we have proper pagination
 const messages = new PersistentVector<PostedMessage>("m");
 
 
